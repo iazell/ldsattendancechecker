@@ -142,11 +142,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void scan() {
-
         Intent i = new Intent(MainActivity.this, AttendanceActivity.class);
         startActivity(i);
         finish();
 
     }
-
 }
