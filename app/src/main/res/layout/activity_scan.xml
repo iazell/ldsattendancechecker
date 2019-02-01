@@ -83,7 +83,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvresult"
+            android:id="@+id/tvResult"
             android:textColor="#000"
             android:layout_marginTop="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
