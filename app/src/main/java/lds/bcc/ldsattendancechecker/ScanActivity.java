@@ -1,5 +1,6 @@
 package lds.bcc.ldsattendancechecker;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,8 +52,15 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
         Log.v("kkkk", result.getContents()); // Prints scan results
         Log.v("uuuu", result.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
 
-        AttendanceActivity.tvresult.setText(result.getContents());
+        Log.d("resulteee: ", result.getContents() + "");
 
+        Intent i = new Intent(this, AttendanceActivity.class);
+        i.putExtra("epuzzle", result.getContents());
+        startActivity(i);
+
+//        AttendanceActivity activity = new AttendanceActivity();
+//                activity.setResult(result.getContents());
+////        AttendanceActivity.tvresult.setText(result.getContents());
 
         onBackPressed();
 
