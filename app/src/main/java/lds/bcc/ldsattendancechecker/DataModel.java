@@ -1,11 +1,11 @@
 package lds.bcc.ldsattendancechecker;
-
 public class DataModel {
 
     String name;
     String type;
     String version_number;
     String feature;
+
 
     public DataModel(String name, String type, String version_number, String feature ) {
         this.name=name;
@@ -15,17 +15,21 @@ public class DataModel {
 
     }
 
+
     public String getName() {
         return name;
     }
+
 
     public String getType() {
         return type;
     }
 
+
     public String getVersion_number() {
         return version_number;
     }
+
 
     public String getFeature() {
         return feature;

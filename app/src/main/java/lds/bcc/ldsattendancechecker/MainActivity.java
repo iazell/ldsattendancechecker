@@ -17,9 +17,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    DatabaseHelper db = new DatabaseHelper(this);
-    DatabaseStudent dbClient = new DatabaseStudent(this);
-
     private List<MenuForm> form;
     ProgressDialog progressDialog;
 
