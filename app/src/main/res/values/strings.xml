@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">LDS Attendance Checker</string>
     <string name="action_settings">Settings</string>
+
+    <string name="success_title">Oh Yeah!!</string>
+    <string name="success_message">Whatever you did, it was a huge success =D.</string>
+    <string name="success_button_text">OK, Cool</string>
+    <string name="content_description_base_dialog_icon">Imagem do Diálogo</string>
 </resources>

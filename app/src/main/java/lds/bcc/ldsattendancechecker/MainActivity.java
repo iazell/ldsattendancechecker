@@ -42,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         form = new ArrayList<>();
-        form.add(new MenuForm("Lifeclass Men", R.drawable.common_google_signin_btn_icon_dark_focused));
-        form.add(new MenuForm("Lifeclass Women", R.drawable.common_full_open_on_phone));
-        form.add(new MenuForm("SOL1 Men", R.drawable.common_full_open_on_phone));
-        form.add(new MenuForm("SOL1 Women", R.drawable.common_full_open_on_phone));
-        form.add(new MenuForm("SOL2 Men", R.drawable.common_full_open_on_phone));
-        form.add(new MenuForm("SOL2 Women", R.drawable.common_full_open_on_phone));
-        form.add(new MenuForm("Sync", R.drawable.common_full_open_on_phone));
-
+        form.add(new MenuForm("Lifeclass", R.drawable.classroom));
+        form.add(new MenuForm("School of Leaders 1", R.drawable.group));
+        form.add(new MenuForm("School of Leaders 2", R.drawable.team));
+        form.add(new MenuForm("Sync student details", R.drawable.sync));
+        form.add(new MenuForm("Send mass message", R.drawable.message));
+        form.add(new MenuForm("Call Cell Leader", R.drawable.call));
 
         RecyclerView.Adapter adapter = new DataAdapter(form);
         recyclerView.setAdapter(adapter);

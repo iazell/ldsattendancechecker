@@ -39,6 +39,9 @@ public class AttendanceActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         init();
     }
 
@@ -96,5 +99,18 @@ public class AttendanceActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        Intent intent = new Intent(AttendanceActivity.this, MainActivity.class);
+        startActivity(intent);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(AttendanceActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }
