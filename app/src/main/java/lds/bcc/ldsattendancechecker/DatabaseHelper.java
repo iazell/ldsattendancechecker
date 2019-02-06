@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time+ " TEXT  )";
+                + student_time + " TEXT  )";
         db.execSQL(CREATE_ATTENDANCE_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_TABLE);
@@ -92,8 +92,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time+ " TEXT  )";
-        db.execSQL(CREATE_ATTENDANCE_TABLE);
+                + student_time + " TEXT  )";
+        db.execSQL(CREATE_ATTENDANCE_SOL1_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_SOL1_TABLE);
 
@@ -102,8 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time+ " TEXT  )";
-        db.execSQL(CREATE_ATTENDANCE_TABLE);
+                + student_time + " TEXT  )";
+        db.execSQL(CREATE_ATTENDANCE_SOL2_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_SOL2_TABLE);
     }
@@ -239,7 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<AttendanceLifeclassModel> getAllAttendanceLifeclass() {
         List<AttendanceLifeclassModel> contentList = new ArrayList<AttendanceLifeclassModel>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + tbl_attendance_lifeclass +  " ORDER BY " + id + " DESC";
+        String selectQuery = "SELECT  * FROM " + tbl_attendance_lifeclass + " ORDER BY " + id + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -301,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<AttendanceSOL1Model> getAllAttendanceSOL1() {
         List<AttendanceSOL1Model> contentList = new ArrayList<AttendanceSOL1Model>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + tbl_attendance_SOL1 +  " ORDER BY " + id_SOL1 + " DESC";
+        String selectQuery = "SELECT  * FROM " + tbl_attendance_SOL1 + " ORDER BY " + id_SOL1 + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -363,7 +363,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<AttendanceSOL2Model> getAllAttendanceSOL2() {
         List<AttendanceSOL2Model> contentList = new ArrayList<AttendanceSOL2Model>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + tbl_attendance_SOL2 +  " ORDER BY " + id_SOL2 + " DESC";
+        String selectQuery = "SELECT  * FROM " + tbl_attendance_SOL2 + " ORDER BY " + id_SOL2 + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -383,35 +383,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return contentList;
     }
 
-    public boolean isStudentScanned(String student_number, String level)
+    public boolean isStudentScanned(String student_number, String level) {
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT " + student_number + " FROM tbl_attendance_" + level + " WHERE " + student_number + "='" + student_number + "'", null);
+            if (cursor.moveToFirst()) {
+                db.close();
+                Log.d("Record  Already Exists", "");
+                return true;//record Exists
 
-    {
-
-        Cursor DB_cursor = null;
-        String DB_query = "";
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        try
-        {
-            DB_query = "SELECT * FROM tbl_attendance_"+ level + " WHERE student_number=" + student_number;
-            DB_cursor = db.rawQuery(DB_query, null);
-
-            if (DB_cursor.moveToFirst())
-            {
-                DB_cursor.close();
-                return true;
             }
-            else
-            {
-                DB_cursor.close();
-                return false;
-            }
+            Log.d("New Record  ", "Table is");
+            db.close();
+        } catch (Exception errorException) {
+            Log.d("Exception occured", "Exception occured " + errorException);
+            // db.close();
         }
-        catch (Exception ex)
-        {
-            DB_cursor.close();
-            return false;
-        }
+        return false;
     }
+//    {
+//
+//        Cursor DB_cursor = null;
+//        String DB_query = "";
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        try
+//        {
+//            DB_query = "SELECT * FROM tbl_attendance_"+ level + " WHERE student_number=" + student_number;
+//            DB_cursor = db.rawQuery(DB_query, null);
+//
+//            if (DB_cursor.moveToFirst())
+//            {
+//                DB_cursor.close();
+//                return true;
+//            }
+//            else
+//            {
+//                DB_cursor.close();
+//                return false;
+//            }
+//        }
+//        catch (Exception ex)
+//        {
+//            DB_cursor.close();
+//            return false;
+//        }
 
 }
