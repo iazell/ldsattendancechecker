@@ -73,31 +73,31 @@ public class MainActivity extends AppCompatActivity {
                     switch (position) {
 
                         case 0:
-                            scan();
+                            scan("lifeclass");
                             break;
 
                         case 1:
-                            scan();
+                            scan("sol1");
                             break;
 
                         case 2:
-                            scan();
+                            scan("sol2");
                             break;
 
                         case 3:
-                            scan();
+                            sync();
                             break;
 
                         case 4:
-                            scan();
+                            scan("");
                             break;
 
                         case 5:
-                            scan();
+                            scan("");
                             break;
 
                         case 6:
-                            scan();
+                            scan("");
                             break;
 
                         case 7:
@@ -128,16 +128,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sync() {
-
-        Intent i = new Intent(MainActivity.this, SyncActivity.class);
-        startActivity(i);
-
-
+        SyncActivity task = new SyncActivity(MainActivity.this);
+        task.execute("http://localhost:8000/getstudents/");
     }
 
 
-    private void scan() {
+    private void scan(String level) {
         Intent i = new Intent(MainActivity.this, AttendanceActivity.class);
+        i.putExtra("level", level);
         startActivity(i);
         finish();
 

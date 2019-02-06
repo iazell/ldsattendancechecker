@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,6 +28,7 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
     int week = 1;
     String qrCodeContents = null;
     String student_number = null;
+    String level;
     //camera permission is needed.
 
     @Override
@@ -36,6 +38,7 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
         setContentView(mScannerView);                // Set the scanner view as the content view
 
         Log.d("hello", "hello");
+        level = getIntent().getStringExtra("level");
     }
 
     @Override
@@ -56,54 +59,130 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
         // Do something with the result here
         Log.v("kkkk", result.getContents()); // Prints scan results
         Log.v("uuuu", result.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
-
         Log.d("resulteee: ", result.getContents() + "");
+
         qrCodeContents = result.getContents();
-        if(qrCodeContents.contains("lifeclass")) {
+
+        if(level.equals("lifeclass")){
             student_number = qrCodeContents.replace("lifeclass", "");
-        }else if(qrCodeContents.contains("sol1")){
-            student_number = qrCodeContents.replace("sol1", "");
-        }else if(qrCodeContents.contains("sol1")){
-            student_number = qrCodeContents.replace("sol2", "");
-        }
+            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+            if(databaseHelper.isStudentScanned(student_number, "lifeclass")){
+                alertDialog.setTitle("Stop!");
+                alertDialog.setMessage("Student number " + student_number + " is already scanned.");
+            }else {
 
-        AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-        alertDialog.setTitle("Success!");
-        alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(qrCodeContents.contains("lifeclass")){
-                            String student_number = qrCodeContents.replace("lifeclass", "");
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
-                            String timestamp = mdformat.format(calendar.getTime());
-                            String student_status = null;
-                            try {
-                                Date exact_time = mdformat.parse(exact_time_lifeclass);
-                                Date student_time = mdformat.parse(timestamp);
+                alertDialog.setTitle("Success!");
+                alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
 
-                                if(student_time.after(exact_time)){
-                                    student_status = "late";
-                                }else{
-                                    student_status = "present";
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                    String student_number = qrCodeContents.replace("lifeclass", "");
+                                    Calendar calendar = Calendar.getInstance();
+                                    SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                    String timestamp = mdformat.format(calendar.getTime());
+                                    String student_status = null;
+                                    try {
+                                        Date exact_time = mdformat.parse(exact_time_lifeclass);
+                                        Date student_time = mdformat.parse(timestamp);
+
+                                        if (student_time.after(exact_time)) {
+                                            student_status = "late";
+                                        } else {
+                                            student_status = "present";
+                                        }
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number, student_status, timestamp));
+
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+
                             }
-                            databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number, student_status, timestamp));
-                        }else if(qrCodeContents.contains("sol1")){
+                        });
+            }
+            alertDialog.show();
+        }else if(level.equals("sol1")){
+            student_number = qrCodeContents.replace("sol1", "");
+            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+            alertDialog.setTitle("Success!");
+            alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(qrCodeContents.contains("lifeclass")){
+                                String student_number = qrCodeContents.replace("lifeclass", "");
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                String timestamp = mdformat.format(calendar.getTime());
+                                String student_status = null;
+                                try {
+                                    Date exact_time = mdformat.parse(exact_time_lifeclass);
+                                    Date student_time = mdformat.parse(timestamp);
 
-                        }else if(qrCodeContents.contains("sol1")){
+                                    if(student_time.after(exact_time)){
+                                        student_status = "late";
+                                    }else{
+                                        student_status = "present";
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                databaseHelper.addAttendanceSOL1(new AttendanceSOL1Model(String.valueOf(week), student_number, student_status, timestamp));
+                            }else if(qrCodeContents.contains("sol1")){
+
+                            }else if(qrCodeContents.contains("sol1")){
+
+                            }
+
+                            Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
 
                         }
+                    });
+            alertDialog.show();
+        }else if(level.equals("sol2")){
+            student_number = qrCodeContents.replace("sol2", "");
+            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+            alertDialog.setTitle("Success!");
+            alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(qrCodeContents.contains("lifeclass")){
+                                String student_number = qrCodeContents.replace("lifeclass", "");
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                String timestamp = mdformat.format(calendar.getTime());
+                                String student_status = null;
+                                try {
+                                    Date exact_time = mdformat.parse(exact_time_lifeclass);
+                                    Date student_time = mdformat.parse(timestamp);
 
-                        Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
-                        startActivity(intent);
+                                    if(student_time.after(exact_time)){
+                                        student_status = "late";
+                                    }else{
+                                        student_status = "present";
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                databaseHelper.addAttendanceSOL2(new AttendanceSOL2Model(String.valueOf(week), student_number, student_status, timestamp));
+                            }else if(qrCodeContents.contains("sol1")){
 
-                    }
-                });
-        alertDialog.show();
+                            }else if(qrCodeContents.contains("sol1")){
+
+                            }
+
+                            Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
+
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 }
 
