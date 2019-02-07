@@ -63,7 +63,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 else if(cm.getStudent_status().equals("late"))
                     status = "Late";
 
-                dataModels.add(new DataModel(status, cm.getStudent_time(), cm.getStudent_number(), cm.getClass_week()));
+                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_number(), cm.getClass_week()));
             }
             customAdapter= new CustomAdapter(dataModels,getApplicationContext());
             lv.setAdapter(customAdapter);

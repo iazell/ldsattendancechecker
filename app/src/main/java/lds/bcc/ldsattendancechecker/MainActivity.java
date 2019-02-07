@@ -3,22 +3,27 @@ package lds.bcc.ldsattendancechecker;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private List<MenuForm> form;
     ProgressDialog progressDialog;
+    DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(tb);
         final ActionBar ab = getSupportActionBar();
-        ab.setLogo(R.drawable.ic_launcher_background);
+        ab.setLogo(R.drawable.rsz_bcc);
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(true); // disable the default title element here (for centered title)
         init();
@@ -42,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         form = new ArrayList<>();
-        form.add(new MenuForm("Lifeclass", R.drawable.classroom));
-        form.add(new MenuForm("School of Leaders 1", R.drawable.group));
-        form.add(new MenuForm("School of Leaders 2", R.drawable.team));
+        form.add(new MenuForm("Lifeclass", R.drawable.classroom)); //1ebe54
+        form.add(new MenuForm("School of Leaders 1", R.drawable.group)); //e52d27
+        form.add(new MenuForm("School of Leaders 2", R.drawable.team)); //8600ef
         form.add(new MenuForm("Sync student details", R.drawable.sync));
         form.add(new MenuForm("Send mass message", R.drawable.message));
         form.add(new MenuForm("Call Cell Leader", R.drawable.call));
@@ -128,8 +133,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sync() {
-        SyncActivity task = new SyncActivity(MainActivity.this);
-        task.execute("http://192.168.116:8000/getstudents/");
+        String url = "http://192.168.254.108:8000";
+        Log.d("url", url);
+
+        List<AttendanceLifeclassModel> attendanceLifeclassModel = databaseHelper.getAllAttendanceLifeclass();
+        if (attendanceLifeclassModel != null) {
+            Map<String, String> attendance = new HashMap<>();
+            for (AttendanceLifeclassModel cm : attendanceLifeclassModel) {
+                Log.d("post", cm.getClass_week()+"");
+                Log.d("post", cm.getStudent_number()+"");
+                Log.d("post", cm.getStudent_status()+"");
+                attendance.put("class_week", cm.getClass_week());
+                attendance.put("student_number", cm.getStudent_number());
+                attendance.put("student_status", cm.getStudent_status());
+            }
+            HttpPostAsyncTask task = new HttpPostAsyncTask(attendance);
+            task.execute(url + "/postattendancelifeclass/");
+        }
+
+//
+//        Log.d("url", url);
+//        List<AttendanceSOL1Model> attendanceSOL1Model = databaseHelper.getAllAttendanceSOL1();
+//        if (attendanceSOL1Model != null) {
+//            Map<String, String> attendanceSOL1 = new HashMap<>();
+//            for (AttendanceLifeclassModel cm : attendanceLifeclassModel) {
+//                Log.d("post", cm.getClass_week()+"");
+//                Log.d("post", cm.getStudent_number()+"");
+//                Log.d("post", cm.getStudent_status()+"");
+//                attendanceSOL1.put("class_week", cm.getClass_week());
+//                attendanceSOL1.put("student_number", cm.getStudent_number());
+//                attendanceSOL1.put("student_status", cm.getStudent_status());
+//            }
+//            HttpPostAsyncTask taskSOL1 = new HttpPostAsyncTask(attendanceSOL1);
+//            taskSOL1.execute(url + "/postattendancesol1/");
+//        }
+//
+//
+//        Log.d("url", url);
+//        List<AttendanceSOL2Model> attendanceSOL2Model = databaseHelper.getAllAttendanceSOL2();
+//        if (attendanceSOL2Model != null) {
+//            Map<String, String> attendanceSOL2 = new HashMap<>();
+//            for (AttendanceLifeclassModel cm : attendanceLifeclassModel) {
+//                Log.d("post", cm.getClass_week()+"");
+//                Log.d("post", cm.getStudent_number()+"");
+//                Log.d("post", cm.getStudent_status()+"");
+//                attendanceSOL2.put("class_week", cm.getClass_week());
+//                attendanceSOL2.put("student_number", cm.getStudent_number());
+//                attendanceSOL2.put("student_status", cm.getStudent_status());
+//            }
+//            HttpPostAsyncTask taskSOL2 = new HttpPostAsyncTask(attendanceSOL2);
+//            taskSOL2.execute(url + "/postattendancesol2/");
+//        }
+
     }
 
 
