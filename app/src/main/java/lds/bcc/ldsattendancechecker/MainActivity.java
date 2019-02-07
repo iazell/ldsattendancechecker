@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sync() {
         SyncActivity task = new SyncActivity(MainActivity.this);
-        task.execute("http://localhost:8000/getstudents/");
+        task.execute("http://192.168.116:8000/getstudents/");
     }
 
 
