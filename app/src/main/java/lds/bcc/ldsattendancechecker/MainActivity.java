@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         List<AttendanceLifeclassModel> attendanceLifeclassModel = databaseHelper.getAllAttendanceLifeclass();
         if (attendanceLifeclassModel != null) {
             Map<String, String> attendance = new HashMap<>();
+            Map<String, String> post_attendance = new HashMap<>();
             for (AttendanceLifeclassModel cm : attendanceLifeclassModel) {
                 Log.d("post", cm.getClass_week()+"");
                 Log.d("post", cm.getStudent_number()+"");
@@ -146,8 +147,11 @@ public class MainActivity extends AppCompatActivity {
                 attendance.put("class_week", cm.getClass_week());
                 attendance.put("student_number", cm.getStudent_number());
                 attendance.put("student_status", cm.getStudent_status());
+
+                post_attendance.putAll(attendance);
             }
-            HttpPostAsyncTask task = new HttpPostAsyncTask(attendance);
+
+            HttpPostAsyncTask task = new HttpPostAsyncTask(post_attendance);
             task.execute(url + "/postattendancelifeclass/");
         }
 

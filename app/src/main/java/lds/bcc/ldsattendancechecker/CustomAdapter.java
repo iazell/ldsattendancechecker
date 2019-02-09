@@ -53,11 +53,15 @@ public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnCli
 
         switch (v.getId())
         {
-
             case R.id.item_info:
 
-                Snackbar.make(v, "Release date " +dataModel.getFeature(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
+                Snackbar snackbar =  Snackbar.make(v, dataModel.getLeader() + "\n" +
+                                                     "Leader: " + dataModel.getNetwork() +"\n" +
+                                                     "Network: " + dataModel.getFeature(),Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_LONG);
+                View snackbarView = snackbar.getView();
+                TextView tv= (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setMaxLines(3);
+                snackbar.show();
 
                 break;
 

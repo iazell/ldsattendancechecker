@@ -17,6 +17,7 @@ import java.util.List;
 
 public class AttendanceActivity extends AppCompatActivity {
 
+    public static String student_name = "ScanActivity";
     DatabaseHelper databaseHelper;
     List<AttendanceLifeclassModel> attendanceLifeclassModel;
     List<AttendanceSOL1Model> attendanceSOL1Model;
@@ -24,7 +25,6 @@ public class AttendanceActivity extends AppCompatActivity {
     List<StudentModel> studentModel;
     ArrayList<DataModel> dataModels;
     ListView lv;
-    public static SimpleAdapter adapter;
     public static CustomAdapter customAdapter;
     String level;
 
@@ -63,7 +63,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 else if(cm.getStudent_status().equals("late"))
                     status = "Late";
 
-                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_number(), cm.getClass_week()));
+                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_name() , cm.getStudent_network(), status, cm.getStudent_leader(), cm.getStudent_nickname()));
             }
             customAdapter= new CustomAdapter(dataModels,getApplicationContext());
             lv.setAdapter(customAdapter);
@@ -81,8 +81,7 @@ public class AttendanceActivity extends AppCompatActivity {
                     status = "On-Time";
                 else if(cm.getStudent_status().equals("late"))
                     status = "Late";
-
-                dataModels.add(new DataModel(status, cm.getStudent_time(), cm.getStudent_number(), cm.getClass_week()));
+                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_name() , cm.getStudent_network(), cm.getStudent_leader(), status, cm.getStudent_nickname()));
             }
             customAdapter= new CustomAdapter(dataModels,getApplicationContext());
             lv.setAdapter(customAdapter);
@@ -101,7 +100,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 else if(cm.getStudent_status().equals("late"))
                     status = "Late";
 
-                dataModels.add(new DataModel(status, cm.getStudent_time(), cm.getStudent_number(), cm.getClass_week()));
+                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_name() , cm.getStudent_network(), status, cm.getStudent_leader(), cm.getStudent_nickname()));
             }
             customAdapter= new CustomAdapter(dataModels,getApplicationContext());
             lv.setAdapter(customAdapter);

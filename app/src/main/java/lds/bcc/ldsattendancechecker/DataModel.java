@@ -5,13 +5,20 @@ public class DataModel {
     String type;
     String version_number;
     String feature;
+    String leader;
+    String network;
+    String status;
 
 
-    public DataModel(String name, String type, String version_number, String feature ) {
+
+    public DataModel(String name, String type, String version_number, String feature, String leader, String network, String status) {
         this.name=name;
         this.type=type;
         this.version_number=version_number;
         this.feature=feature;
+        this.leader=leader;
+        this.network=network;
+        this.status=status;
 
     }
 
@@ -34,5 +41,21 @@ public class DataModel {
     public String getFeature() {
         return feature;
     }
+
+    public String getLeader() {
+        return leader;
+    }
+
+
+    public String getNetwork() {
+        return network;
+    }
+
+
+    public String getStatus() {
+        return status;
+    }
+
+
 
 }

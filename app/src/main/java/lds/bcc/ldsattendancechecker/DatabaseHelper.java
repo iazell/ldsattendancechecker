@@ -39,6 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String student_num = "student_number";
     public static final String student_status = "student_status";
     public static final String student_time = "student_time";
+    public static final String student_name_att = "student_name";
+    public static final String student_nick = "student_nickname";
+    public static final String student_lead = "student_leader";
+    public static final String student_net = "student_network";
 
     private static final String tbl_attendance_SOL1 = "tbl_attendance_SOL1";
     ///columns...
@@ -47,6 +51,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String student_number_SOL1 = "student_number";
     public static final String student_status_SOL1 = "student_status";
     public static final String student_time_SOL1 = "student_time";
+    public static final String student_name_att_SOL1 = "student_name";
+    public static final String student_nick_SOL1 = "student_nickname";
+    public static final String student_lead_SOL1 = "student_leader";
+    public static final String student_net_SOL1 = "student_network";
 
     private static final String tbl_attendance_SOL2 = "tbl_attendance_SOL1";
     ///columns...
@@ -55,6 +63,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String student_number_SOL2 = "student_number";
     public static final String student_status_SOL2 = "student_status";
     public static final String student_time_SOL2 = "student_time";
+    public static final String student_name_att_SOL2 = "student_name";
+    public static final String student_nick_SOL2 = "student_nickname";
+    public static final String student_lead_SOL2 = "student_leader";
+    public static final String student_net_SOL2 = "student_network";
+
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -74,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + student_network + " TEXT, "
                 + student_class + " TEXT)";
 
-        Log.e("sql query", CREATE_STUDENTS_TABLE);
+       Log.e("sql query", CREATE_STUDENTS_TABLE);
         db.execSQL(CREATE_STUDENTS_TABLE);
 
         String CREATE_ATTENDANCE_TABLE = "CREATE TABLE IF NOT EXISTS " + tbl_attendance_lifeclass + "("
@@ -82,7 +96,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time + " TEXT  )";
+                + student_time + " TEXT,"
+                + student_name_att + " TEXT ,"
+                + student_nick + " TEXT ,"
+                + student_lead + " TEXT ,"
+                + student_net + " TEXT )";
         db.execSQL(CREATE_ATTENDANCE_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_TABLE);
@@ -92,7 +110,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time + " TEXT  )";
+                + student_time + " TEXT,"
+                + student_name_att_SOL1 + " TEXT ,"
+                + student_nick_SOL1 + " TEXT ,"
+                + student_lead_SOL1 + " TEXT ,"
+                + student_net_SOL1 + " TEXT )";
         db.execSQL(CREATE_ATTENDANCE_SOL1_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_SOL1_TABLE);
@@ -102,7 +124,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + class_week + " TEXT ,"
                 + student_num + " TEXT ,"
                 + student_status + " TEXT ,"
-                + student_time + " TEXT  )";
+                + student_time + " TEXT,"
+                + student_name_att_SOL2 + " TEXT ,"
+                + student_nick_SOL2 + " TEXT ,"
+                + student_lead_SOL2 + " TEXT ,"
+                + student_net_SOL2 + " TEXT )";
         db.execSQL(CREATE_ATTENDANCE_SOL2_TABLE);
 
         Log.e("sql query", CREATE_ATTENDANCE_SOL2_TABLE);
@@ -202,14 +228,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(class_week, attendanceLifeclassModel.getClass_week());
-        values.put(student_number, attendanceLifeclassModel.getStudent_number());
+        values.put(student_num, attendanceLifeclassModel.getStudent_number());
         values.put(student_status, attendanceLifeclassModel.getStudent_status());
         values.put(student_time, attendanceLifeclassModel.getStudent_time());
+        values.put(student_name_att, attendanceLifeclassModel.getStudent_name());
+        values.put(student_nick, attendanceLifeclassModel.getStudent_nickname());
+        values.put(student_lead, attendanceLifeclassModel.getStudent_leader());
+        values.put(student_net, attendanceLifeclassModel.getStudent_network());
 
         Log.d("data", (String) values.get(class_week));
         Log.d("data", (String) values.get(student_number));
         Log.d("data", (String) values.get(student_status));
         Log.d("data", (String) values.get(student_time));
+        Log.d("data", (String) values.get(student_name_att));
+        Log.d("data", (String) values.get(student_nick));
+        Log.d("data", (String) values.get(student_lead));
+        Log.d("data", (String) values.get(student_net));
 
 
         // Inserting Row
@@ -252,6 +286,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 attendance.setStudent_number(cursor.getString(2));
                 attendance.setStudent_status(cursor.getString(3));
                 attendance.setStudent_time(cursor.getString(4));
+                attendance.setStudent_name(cursor.getString(5));
+                attendance.setStudent_nickname(cursor.getString(6));
+                attendance.setStudent_leader(cursor.getString(7));
+                attendance.setStudent_network(cursor.getString(8));
                 contentList.add(attendance);
             } while (cursor.moveToNext());
         }
@@ -267,6 +305,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(student_number_SOL1, attendanceSOL1Model.getStudent_number());
         values.put(student_status_SOL1, attendanceSOL1Model.getStudent_status());
         values.put(student_time_SOL1, attendanceSOL1Model.getStudent_time());
+        values.put(student_name_att_SOL1, attendanceSOL1Model.getStudent_name());
+        values.put(student_nick_SOL1, attendanceSOL1Model.getStudent_nickname());
+        values.put(student_lead_SOL1, attendanceSOL1Model.getStudent_leader());
+        values.put(student_net_SOL1, attendanceSOL1Model.getStudent_network());
 
         Log.d("data", (String) values.get(class_week));
         Log.d("data", (String) values.get(student_number));
@@ -314,6 +356,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 attendance.setStudent_number(cursor.getString(2));
                 attendance.setStudent_status(cursor.getString(3));
                 attendance.setStudent_time(cursor.getString(4));
+                attendance.setStudent_name(cursor.getString(5));
+                attendance.setStudent_nickname(cursor.getString(6));
+                attendance.setStudent_leader(cursor.getString(7));
+                attendance.setStudent_network(cursor.getString(8));
                 contentList.add(attendance);
             } while (cursor.moveToNext());
         }
@@ -329,11 +375,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(student_number_SOL2, attendanceSOL2Model.getStudent_number());
         values.put(student_status_SOL2, attendanceSOL2Model.getStudent_status());
         values.put(student_time_SOL2, attendanceSOL2Model.getStudent_time());
+        values.put(student_name_att_SOL2, attendanceSOL2Model.getStudent_name());
+        values.put(student_nick_SOL2, attendanceSOL2Model.getStudent_nickname());
+        values.put(student_lead_SOL2, attendanceSOL2Model.getStudent_leader());
+        values.put(student_net_SOL2, attendanceSOL2Model.getStudent_network());
 
         Log.d("data", (String) values.get(class_week_SOL2));
         Log.d("data", (String) values.get(student_number_SOL2));
         Log.d("data", (String) values.get(student_status_SOL2));
         Log.d("data", (String) values.get(student_time_SOL2));
+
 
 
         // Inserting Row
@@ -376,6 +427,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 attendance.setStudent_number(cursor.getString(2));
                 attendance.setStudent_status(cursor.getString(3));
                 attendance.setStudent_time(cursor.getString(4));
+                attendance.setStudent_name(cursor.getString(5));
+                attendance.setStudent_nickname(cursor.getString(6));
+                attendance.setStudent_leader(cursor.getString(7));
+                attendance.setStudent_network(cursor.getString(8));
                 contentList.add(attendance);
             } while (cursor.moveToNext());
         }
