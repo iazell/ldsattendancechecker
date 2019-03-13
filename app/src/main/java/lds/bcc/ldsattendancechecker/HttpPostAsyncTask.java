@@ -33,6 +33,8 @@ public class HttpPostAsyncTask extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
 
+        System.out.println(params[0]);
+
         try {
             // This is getting the url from the string we passed in
             URL url = new URL(params[0]);

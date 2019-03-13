@@ -38,7 +38,7 @@ public class AttendanceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        level = getIntent().getStringExtra("level");
+
 
         init();
     }
@@ -46,11 +46,14 @@ public class AttendanceActivity extends AppCompatActivity {
     private void init() {
         lv=findViewById(R.id.list);
         databaseHelper = new DatabaseHelper(this);
+        level = getIntent().getStringExtra("level");
+        Log.d("level", level);
+        dataModels= new ArrayList<>();
 
 
         if(level.equals("lifeclass")){
             attendanceLifeclassModel= databaseHelper.getAllAttendanceLifeclass();
-            dataModels= new ArrayList<>();
+
             String status = null;
             for (AttendanceLifeclassModel cm : attendanceLifeclassModel) {
                 Log.d("lifeclass", cm.getClass_week()+"");
@@ -69,10 +72,9 @@ public class AttendanceActivity extends AppCompatActivity {
             lv.setAdapter(customAdapter);
         }else if(level.equals("sol1")){
             attendanceSOL1Model= databaseHelper.getAllAttendanceSOL1();
-            dataModels= new ArrayList<>();
             String status = null;
             for (AttendanceSOL1Model cm : attendanceSOL1Model) {
-                Log.d("sol1", cm.getClass_week()+"");
+                Log.d("lifeclass", cm.getClass_week()+"");
                 Log.d("view", cm.getStudent_number()+"");
                 Log.d("view", cm.getStudent_status()+"");
                 Log.d("view", cm.getStudent_time()+"");
@@ -81,16 +83,16 @@ public class AttendanceActivity extends AppCompatActivity {
                     status = "On-Time";
                 else if(cm.getStudent_status().equals("late"))
                     status = "Late";
-                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_name() , cm.getStudent_network(), cm.getStudent_leader(), status, cm.getStudent_nickname()));
+
+                dataModels.add(new DataModel(cm.getStudent_number(), cm.getStudent_time(), cm.getStudent_name() , cm.getStudent_network(), status, cm.getStudent_leader(), cm.getStudent_nickname()));
             }
             customAdapter= new CustomAdapter(dataModels,getApplicationContext());
             lv.setAdapter(customAdapter);
         }else if(level.equals("sol2")){
             attendanceSOL2Model= databaseHelper.getAllAttendanceSOL2();
-            dataModels= new ArrayList<>();
             String status = null;
             for (AttendanceSOL2Model cm : attendanceSOL2Model) {
-                Log.d("sol2", cm.getClass_week()+"");
+                Log.d("lifeclass", cm.getClass_week()+"");
                 Log.d("view", cm.getStudent_number()+"");
                 Log.d("view", cm.getStudent_status()+"");
                 Log.d("view", cm.getStudent_time()+"");

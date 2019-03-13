@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
@@ -33,6 +35,8 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
     String student_leader;
     String student_network;
 
+    public String url = "http://bcc.pythonanywhere.com/";
+
     String level;
     //camera permission is needed.
 
@@ -42,8 +46,9 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
         mScannerView = new ZBarScannerView(this);    // Programmatically initialize the scanner view
         setContentView(mScannerView);                // Set the scanner view as the content view
 
-        Log.d("hello", "hello");
+
         level = getIntent().getStringExtra("level");
+        Log.d("hello", level);
     }
 
     @Override
@@ -75,103 +80,175 @@ public class ScanActivity extends AppCompatActivity implements ZBarScannerView.R
 
         Log.d("hey", student_number + student_name + student_nickname + student_leader + student_network + "");
 
-        if(level.equals("lifeclass")){
-            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-            alertDialog.setTitle("Success!");
-            alertDialog.setMessage(student_number + " " + student_name + " is successfully scanned.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
-                            String timestamp = mdformat.format(calendar.getTime());
-                            String student_status = null;
-                            try {
-                                Date exact_time = mdformat.parse(exact_time_lifeclass);
-                                Date student_time = mdformat.parse(timestamp);
+        if(level.equals("lifeclass")) {
+            if(databaseHelper.isStudentScanned(student_number, level)) {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Nope!");
+                alertDialog.setMessage(student_number + " " + student_name + " is already scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
 
-                                if (student_time.after(exact_time)) {
-                                    student_status = "late";
-                                } else {
-                                    student_status = "present";
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
                             }
-                            Log.e("name", student_name);
-                            Log.d("hello", ""+String.valueOf(week) + student_number +student_status + timestamp + student_name + student_nickname + student_leader + student_network);
-                            databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number,
-                                    student_status, timestamp, student_name, student_nickname, student_leader, student_network));
-                            Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
-                            startActivity(intent);
+                        });
+                alertDialog.show();
+            }else {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Success!");
+                alertDialog.setMessage(student_number + " " + student_name + " is successfully scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                String timestamp = mdformat.format(calendar.getTime());
+                                String student_status = null;
+                                try {
+                                    Date exact_time = mdformat.parse(exact_time_lifeclass);
+                                    Date student_time = mdformat.parse(timestamp);
 
-                        }
-                    });
-            alertDialog.show();
+                                    if (student_time.after(exact_time)) {
+                                        student_status = "late";
+                                    } else {
+                                        student_status = "present";
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.e("name", student_name);
+                                Log.d("hello", "" + String.valueOf(week) + student_number + student_status + timestamp + student_name + student_nickname + student_leader + student_network);
+                                databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number,
+                                        student_status, timestamp, student_name, student_nickname, student_leader, student_network));
+                                Map<String, String> attendance = new HashMap<>();
+                                attendance.put("class_week", String.valueOf(week));
+                                attendance.put("student_number", student_number);
+                                attendance.put("student_status", student_status);
+
+                                HttpPostAsyncTask task = new HttpPostAsyncTask(attendance);
+                                task.execute(url + "/postattendancelifeclass/");
+
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+
+                            }
+                        });
+                alertDialog.show();
+            }
         }else if(level.equals("sol1")){
-            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-            alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-            alertDialog.setTitle("Success!");
-            alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
-                            String timestamp = mdformat.format(calendar.getTime());
-                            String student_status = null;
-                            try {
-                                Date exact_time = mdformat.parse(exact_time_lifeclass);
-                                Date student_time = mdformat.parse(timestamp);
+            if(databaseHelper.isStudentScanned(student_number, level)) {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Nope!");
+                alertDialog.setMessage(student_number + " " + student_name + " is already scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
 
-                                if (student_time.after(exact_time)) {
-                                    student_status = "late";
-                                } else {
-                                    student_status = "present";
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
                             }
-                            databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number,
-                                    student_status, timestamp, student_name, student_nickname, student_leader, student_network));
-                            Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
-                            startActivity(intent);
+                        });
+                alertDialog.show();
+            }else {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Success!");
+                alertDialog.setMessage(student_number + " " + student_name + " is successfully scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                String timestamp = mdformat.format(calendar.getTime());
+                                String student_status = null;
+                                try {
+                                    Date exact_time = mdformat.parse(exact_time_sol1);
+                                    Date student_time = mdformat.parse(timestamp);
 
-                        }
-                    });
-            alertDialog.show();
+                                    if (student_time.after(exact_time)) {
+                                        student_status = "late";
+                                    } else {
+                                        student_status = "present";
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.e("name", student_name);
+                                Log.d("hello", "" + String.valueOf(week) + student_number + student_status + timestamp + student_name + student_nickname + student_leader + student_network);
+                                databaseHelper.addAttendanceSOL1(new AttendanceSOL1Model(String.valueOf(week), student_number,
+                                        student_status, timestamp, student_name, student_nickname, student_leader, student_network));
+
+                                Map<String, String> attendance = new HashMap<>();
+                                attendance.put("class_week", String.valueOf(week));
+                                attendance.put("student_number", student_number);
+                                attendance.put("student_status", student_status);
+
+                                HttpPostAsyncTask task = new HttpPostAsyncTask(attendance);
+                                task.execute(url + "/postattendancesol1/");
+
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+
+                            }
+                        });
+                alertDialog.show();
+            }
         }else if(level.equals("sol2")){
-            AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-            alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
-            alertDialog.setTitle("Success!");
-            alertDialog.setMessage("Student number " + student_number + " is successfully scanned.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
-                            String timestamp = mdformat.format(calendar.getTime());
-                            String student_status = null;
-                            try {
-                                Date exact_time = mdformat.parse(exact_time_lifeclass);
-                                Date student_time = mdformat.parse(timestamp);
+            if(databaseHelper.isStudentScanned(student_number, level)) {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Nope!");
+                alertDialog.setMessage(student_number + " " + student_name + " is already scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
 
-                                if (student_time.after(exact_time)) {
-                                    student_status = "late";
-                                } else {
-                                    student_status = "present";
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
                             }
-                            databaseHelper.addAttendanceLifeclass(new AttendanceLifeclassModel(String.valueOf(week), student_number,
-                                    student_status, timestamp, student_name, student_nickname, student_leader, student_network));
-                            Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
-                            startActivity(intent);
+                        });
+                alertDialog.show();
+            }else {
+                AlertDialog alertDialog = new AlertDialog.Builder(ScanActivity.this).create();
+                alertDialog.setTitle("Success!");
+                alertDialog.setMessage(student_number + " " + student_name + " is successfully scanned.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Calendar calendar = Calendar.getInstance();
+                                SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss");
+                                String timestamp = mdformat.format(calendar.getTime());
+                                String student_status = null;
+                                try {
+                                    Date exact_time = mdformat.parse(exact_time_sol2);
+                                    Date student_time = mdformat.parse(timestamp);
 
-                        }
-                    });
-            alertDialog.show();
+                                    if (student_time.after(exact_time)) {
+                                        student_status = "late";
+                                    } else {
+                                        student_status = "present";
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.e("name", student_name);
+                                Log.d("hello", "" + String.valueOf(week) + student_number + student_status + timestamp + student_name + student_nickname + student_leader + student_network);
+                                databaseHelper.addAttendanceSOL2(new AttendanceSOL2Model(String.valueOf(week), student_number,
+                                        student_status, timestamp, student_name, student_nickname, student_leader, student_network));
+                                Map<String, String> attendance = new HashMap<>();
+                                attendance.put("class_week", String.valueOf(week));
+                                attendance.put("student_number", student_number);
+                                attendance.put("student_status", student_status);
+
+                                HttpPostAsyncTask task = new HttpPostAsyncTask(attendance);
+                                task.execute(url + "/postattendancesol2/");
+
+                                Intent intent = new Intent(ScanActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+
+                            }
+                        });
+                alertDialog.show();
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String student_lead = "student_leader";
     public static final String student_net = "student_network";
 
-    private static final String tbl_attendance_SOL1 = "tbl_attendance_SOL1";
+    private static final String tbl_attendance_SOL1 = "tbl_attendance_sol1";
     ///columns...
     public static final String id_SOL1 = "id";
     public static final String class_week_SOL1 = "class_week";
@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String student_lead_SOL1 = "student_leader";
     public static final String student_net_SOL1 = "student_network";
 
-    private static final String tbl_attendance_SOL2 = "tbl_attendance_SOL1";
+    private static final String tbl_attendance_SOL2 = "tbl_attendance_sol2";
     ///columns...
     public static final String id_SOL2 = "id";
     public static final String class_week_SOL2 = "class_week";
@@ -279,7 +279,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
+         if (cursor.moveToFirst()) {
             do {
                 AttendanceLifeclassModel attendance = new AttendanceLifeclassModel();
                 attendance.setClass_week(cursor.getString(1));
@@ -439,49 +439,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean isStudentScanned(String student_number, String level) {
-        try {
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.rawQuery("SELECT " + student_number + " FROM tbl_attendance_" + level + " WHERE " + student_number + "='" + student_number + "'", null);
-            if (cursor.moveToFirst()) {
-                db.close();
-                Log.d("Record  Already Exists", "");
-                return true;//record Exists
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String sql ="SELECT *" + " FROM tbl_attendance_" + level + " WHERE student_number" + "='" + student_number + "'";
+        Log.d("sql", sql);
+        cursor= db.rawQuery(sql,null);
 
-            }
-            Log.d("New Record  ", "Table is");
-            db.close();
-        } catch (Exception errorException) {
-            Log.d("Exception occured", "Exception occured " + errorException);
-            // db.close();
+        if(cursor.getCount()>0){
+            Log.d("scanned",""+cursor.getCount());
+            cursor.close();
+            return true;
+        }else{
+            Log.d("not scanned",""+cursor.getCount());
+            cursor.close();
+            return false;
         }
-        return false;
     }
-//    {
-//
-//        Cursor DB_cursor = null;
-//        String DB_query = "";
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        try
-//        {
-//            DB_query = "SELECT * FROM tbl_attendance_"+ level + " WHERE student_number=" + student_number;
-//            DB_cursor = db.rawQuery(DB_query, null);
-//
-//            if (DB_cursor.moveToFirst())
-//            {
-//                DB_cursor.close();
-//                return true;
-//            }
-//            else
-//            {
-//                DB_cursor.close();
-//                return false;
-//            }
-//        }
-//        catch (Exception ex)
-//        {
-//            DB_cursor.close();
-//            return false;
-//        }
-
 }
