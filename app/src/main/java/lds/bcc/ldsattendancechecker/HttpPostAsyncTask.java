@@ -65,6 +65,8 @@ public class HttpPostAsyncTask extends AsyncTask<String, Void, Void> {
 
                 String response = convertInputStreamToString(inputStream);
 
+                Log.e("response", response+"");
+
                 // From here you can convert the string to JSON with whatever JSON parser you like to use
                 // After converting the string to JSON, I call my custom callback. You can follow this process too, or you can implement the onPostExecute(Result) method
             } else {
